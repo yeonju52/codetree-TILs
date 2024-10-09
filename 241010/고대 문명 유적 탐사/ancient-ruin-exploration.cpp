@@ -99,9 +99,9 @@ int setRotate_1st() { // 1차 획득
 	int maxi = 0;
 	int mxx, mxy;
 	int mxd = 0;
-	for (int dir = 1; dir <= 3; dir++) {
-		for (int i = 1; i <= 3; i++) {
-			for (int j = 1; j <= 3; j++) {		
+	for (int dir = 1; dir <= 3; dir++) {		
+		for (int j = 1; j <= 3; j++) {	
+			for (int i = 1; i <= 3; i++) {
 				memcpy(tmp, arr, sizeof(arr));
 				rotate(i, j, dir);
 				int scr = getScore();
