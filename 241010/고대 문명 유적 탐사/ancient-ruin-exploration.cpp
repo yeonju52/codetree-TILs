@@ -161,11 +161,12 @@ int main() {
 			tmp = getScore();
 			total += tmp;
 			if (tmp == 0) break;
-			if (widx >= M) break;
+			//if (widx >= M) break;
 		}
 		cout << total << " ";
 	}
 
+	return 0;
 	/*for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 5; j++) {
 			cout << arr[i][j] << ' ';
@@ -175,5 +176,4 @@ int main() {
 	/*for (int i = 0; i < M; i++) {
 		cout << wall[i] << ' ';
 	}*/
-    return 0;
 }
