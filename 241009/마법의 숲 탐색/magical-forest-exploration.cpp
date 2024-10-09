@@ -61,7 +61,7 @@ bool isDown(int x, int y) {
 	return true;
 }
 
-bool down(int id, int r, int c, int dir) { // 다 내려가면 vis, esc 표시 // esc = { dx[dir], dy[dir] }
+void down(int id, int r, int c, int dir) { // 다 내려가면 vis, esc 표시 // esc = { dx[dir], dy[dir] }
 	// 쭈욱 내려간다
 	if (isDown(r + 1, c)) down(id, r + 1, c, dir);
 	// 내려가다 안되면 반시계(왼)
@@ -76,7 +76,7 @@ bool down(int id, int r, int c, int dir) { // 다 내려가면 vis, esc 표시 /
 		// 초기화 조건이라면?
 		if (!isRest(r, c)) {
 			reset();
-			return 0;
+			return ;
 		}
 		// 방문 표시
 		vis[r][c] = id;
@@ -85,7 +85,7 @@ bool down(int id, int r, int c, int dir) { // 다 내려가면 vis, esc 표시 /
 			vis[r + dx[i]][c + dy[i]] = id;
 		}
 		esc[r + dx[dir]][c + dy[dir]] = id;
-		return 1;
+		return ;
 	}
 }
 
@@ -131,9 +131,9 @@ int main() {
 		cin >> ci >> di;
 		robot = { 0, 0 };
 		//robot.X = 0, robot.Y = 0;
-		if (down(i + 1, 1, ci, di)) {
-			sum += bfs();
-		}
+		down(i + 1, 1, ci, di);
+		if (robot.X == 0 || robot.Y == 0) continue;
+		sum += bfs();
 		//printVis();
 	}
 	cout << sum;
