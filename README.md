@@ -9,3 +9,8 @@
      - 원상 복구: ```[nx + offsetX][ny + offsetY]```
    - 코드 짤 때 순서 조심
        ```tmp[y][N - 1 - x] = arr[x][y]``` -> ```arr[x][y] = tmp[x][y]``` (반대로 하면 문제 생김)
+2. URLD or DRUL
+
+## 다익스트라 알고리즘
+
+## 거듭제곱 연산: pow() 안 됨
