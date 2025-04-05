@@ -1,8 +1,8 @@
 # [생명과학부 랩 인턴 ![Gold3][g3]](https://www.codetree.ai/training-field/search/problems/biology-lab-intern)
 
-|유형|출처|
-|---|---|
-|[Simulation](https://www.codetree.ai/training-field/search/?tags=Simulation)|[일반연습 / 문제은행](https://www.codetree.ai/training-field/home)|
+|유형|출처|소요시간 / 평균시간|
+|---|---|---|
+|[Simulation](https://www.codetree.ai/training-field/search/?tags=Simulation)|[일반연습 / 문제은행](https://www.codetree.ai/training-field/home)|160분 / 180+분|
 
 
 
