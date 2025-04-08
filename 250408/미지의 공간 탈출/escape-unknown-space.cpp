@@ -3,6 +3,7 @@
 #include<cstring>
 #include<vector>
 #include<queue>
+//#include<iomanip>
 using namespace std;
 
 const int MAX = 20;
@@ -107,9 +108,9 @@ int main(int argc, char** argv)
 						pos2.sx = nx, pos2.sy = ny;
 						// pos3 끝좌표
 						pos3.ed = i;
-						if (i == 0) pos3.ex = x - base.sx, pos3.ey = 2;
+						if (i == 0) pos3.ex = x - base.sx, pos3.ey = M - 1;
 						else if (i == 1) pos3.ex = x - base.sx, pos3.ey = 0;
-						else if (i == 2) pos3.ex = 2, pos3.ey = y - base.sy;
+						else if (i == 2) pos3.ex = M - 1, pos3.ey = y - base.sy;
 						else if (i == 3) pos3.ex = 0, pos3.ey = y - base.sy;
 						found = true;
 						break;
@@ -133,10 +134,8 @@ int main(int argc, char** argv)
 			cout << -1 << "\n";
 			return 0;
 		}
-
 		// 시간이상현상
 		move(400 * 6, wind); // 레퍼런스로 받기
-
 		// 2차원 탐색
 		t2 = bfs(pos2.sx, pos2.sy, pos2.ex, pos2.ey, t1);
 		if (t2 == -1) {
@@ -180,7 +179,7 @@ void move(int T, vector<rcdv> &wind) {
 			if (t % w.v == 0) {
 				int nr = w.r + dx[w.d], nc = w.c + dy[w.d];
 				if (nr < 0 || nr >= N || nc < 0 || nc >= N) continue;
-				if (board[nr][nc] != 0 && board[nr][nc] != 4) continue;
+				if (board[nr][nc] != 0) continue;
 				wall[nr][nc] = t;
 				w.r = nr, w.c = nc; // 참조로 실제 값도 수정
 			}
@@ -203,29 +202,29 @@ int bfs_3d(int sx, int sy, int ex, int ey, int ed) {
 		for (int i = 0; i < 4; i++) {
 			int nd = d, nx = x + dx[i], ny = y + dy[i];
 			if (nx < 0) { // 위로 나갈 때
-				if (d == 2) nd = 4, nx = 2, ny = y;
-				else if (d == 4) nd = 3, nx = 2, ny = y;
+				if (d == 2) nd = 4, nx = M - 1, ny = y;
+				else if (d == 4) nd = 3, nx = M - 1, ny = y;
 				else if (d == 1) nd = 3, nx = y, ny = 0;
-				else if (d == 0) nd = 3, nx = M - 1 - y, ny = 2;
+				else if (d == 0) nd = 3, nx = M - 1 - y, ny = M - 1;
 				else continue;
 			}
 			else if (nx >= M) { // 아래
 				if (d == 3) nd = 4, nx = 0, ny = y;
 				else if (d == 4) nd = 2, nx = 0, ny = y;
 				else if (d == 1) nd = 2, nx = M - 1 - y, ny = 0;
-				else if (d == 0) nd = 2, nx = y, ny = 2;
+				else if (d == 0) nd = 2, nx = y, ny = M - 1;
 				else continue;
 			}
 			else if (ny < 0) { // 왼
-				if (d == 4) nd = 1, nx = x, ny = 2;
-				else if (d == 0) nd = 4, nx = x, ny = 2;
-				else if (d == 2) nd = 1, nx = 2, ny = M - 1 - x;
+				if (d == 4) nd = 1, nx = x, ny = M - 1;
+				else if (d == 0) nd = 4, nx = x, ny = M - 1;
+				else if (d == 2) nd = 1, nx = M - 1, ny = M - 1 - x;
 				else if (d == 3) nd = 1, nx = 0, ny = x;
 				else continue;
 			}
 			else if (ny >= M) { // 오
 				if (d == 1) nd = 4, nx = x, ny = 0;
-				else if (d == 2) nd = 0, nx = 2, ny = x;
+				else if (d == 2) nd = 0, nx = M - 1, ny = x;
 				else if (d == 3) nd = 0, nx = 0, ny = M - 1 - x;
 				else if (d == 4) nd = 0, nx = x, ny = 0;
 				else continue;
@@ -241,7 +240,7 @@ int bfs_3d(int sx, int sy, int ex, int ey, int ed) {
 void display(const int arr[MAX][MAX]) {
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
-			cout << arr[i][j] << " ";
+			cout << arr[i][j];
 		}
 		cout << "\n";
 	}
@@ -261,7 +260,7 @@ void display_3d(const int arr[5][MAX3][MAX3]) {
 		cout << k << "\n";
 		for (int i = 0; i < M; i++) {
 			for (int j = 0; j < M; j++) {
-				cout << arr[k][i][j] << " ";
+				cout << arr[k][i][j] << " "; //  << setw(3)
 			}
 			cout << "\n";
 		}
