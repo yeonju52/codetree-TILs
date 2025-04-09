@@ -20,7 +20,8 @@ pair<int, int> st, ed;
 
 int board[MAX][MAX];
 int area[MAX][MAX];
-int vis[MAX][MAX];
+int rlen;
+pair<int, int> route[MAX * MAX];
 pos warrior[300];
 
 // 상하좌우
@@ -28,7 +29,6 @@ int dx[8] = { -1, 1, 0, 0, -1, -1, 1, 1 };
 int dy[8] = { 0, 0, -1, 1, -1, 1, -1, 1 };
 
 bool bfs();
-void bfs_back();
 int get_dir(int x, int y, int ex, int ey, int mode);
 void view(int x, int y, int val, const vector<int> &dir);
 void display(int arr[MAX][MAX]);
@@ -47,7 +47,6 @@ int main(int argc, char** argv)
 	for (test_case = 1; test_case <= T; ++test_case)
 	{
 		memset(board, 0, sizeof(board));
-		memset(vis, 0, sizeof(vis));
 		memset(warrior, 0, sizeof(warrior));
 
 		cin >> N >> M;
@@ -70,23 +69,13 @@ int main(int argc, char** argv)
 			cout << -1 << "\n";
 			break;
 		}
-		else {
-			bfs_back();
-		}
 
 		int t = 0, moveCnt = 0, rockCnt = 0, attackCnt = 0;
-		int x = st.X, y = st.Y;
+		int x, y;
 		while (true) {
-			t++;
 			// 1. 메두사 이동
-			for (int i = 0; i < 4; i++) {
-				int nx = x + dx[i], ny = y + dy[i];
-				if (nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
-				if (vis[nx][ny] == vis[x][y] + 1) {
-					x = nx, y = ny;
-					break;
-				}
-			}
+			rlen--;
+			x = route[rlen].X, y = route[rlen].Y;
 
 			if (x == ed.X && y == ed.Y) {
 				cout << "0" << "\n";
@@ -226,48 +215,42 @@ void view(int x, int y, int val, const vector<int> &dir) {
 	}
 }
 
+pair<int, int> before[MAX][MAX];
 bool bfs() {
 	queue<pair<int, int>> q;
+	for (int i = 0; i < MAX; i++) {
+		for (int j = 0; j < MAX; j++) {
+			before[i][j] = { -1, -1 };
+		}
+	}
+
+	//fill(before[0], before[MAX], -1);
 
 	int x = st.X, y = st.Y;
-	vis[x][y] = 1;
+	before[x][y] = { x, y };
 	q.push({ x, y });
 
 	while (!q.empty()) {
 		pair<int, int> cur = q.front(); q.pop();
 		x = cur.X, y = cur.Y;
-		if (x == ed.X && y == ed.Y) return true;
+		if (x == ed.X && y == ed.Y) {
+			pair<int, int> prev = cur;
+			while (!(prev.X == st.X && prev.Y == st.Y)) {
+				route[rlen++] = prev;
+				prev = before[prev.X][prev.Y];
+			}
+			return true;
+		}
 		for (int i = 0; i < 4; i++) {
 			int nx = x + dx[i], ny = y + dy[i];
 			if (nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
 			if (board[nx][ny] == 1) continue;
-			if (vis[nx][ny] > 0) continue;
-			vis[nx][ny] = vis[x][y] + 1;
+			if (before[nx][ny].X > -1) continue;
+			before[nx][ny] = { x, y };
 			q.push({ nx, ny });
 		}
 	}
 	return false;
-}
-
-int backup[MAX][MAX];
-void bfs_back() {
-	memcpy(backup, vis, sizeof(backup));
-	memset(vis, 0, sizeof(vis));
-
-	int x = ed.X, y = ed.Y;
-	vis[x][y] = backup[x][y];
-	while (true) {
-		if (x == st.X && y == st.Y) return;
-		for (int i = 3; i >= 0; i--) {
-			int nx = x + dx[i], ny = y + dy[i];
-			if (nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
-			if (backup[nx][ny] == backup[x][y] - 1) {
-				vis[nx][ny] = backup[nx][ny];
-				x = nx, y = ny;
-				break;
-			}
-		}
-	}
 }
 
 void display(int arr[MAX][MAX]) {
