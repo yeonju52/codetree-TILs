@@ -22,7 +22,6 @@ int board[MAX][MAX];
 int area[MAX][MAX];
 int rlen;
 pair<int, int> route[MAX * MAX];
-pos warrior[300];
 
 // 상하좌우
 int dx[8] = { -1, 1, 0, 0, -1, -1, 1, 1 };
@@ -47,7 +46,7 @@ int main(int argc, char** argv)
 	for (test_case = 1; test_case <= T; ++test_case)
 	{
 		memset(board, 0, sizeof(board));
-		memset(warrior, 0, sizeof(warrior));
+		vector<pos> warrior;
 
 		cin >> N >> M;
 		cin >> st.X >> st.Y >> ed.X >> ed.Y;
@@ -55,7 +54,7 @@ int main(int argc, char** argv)
 		for (int w = 0; w < M; w++) {
 			int x, y;
 			cin >> x >> y;
-			warrior[w] = { x, y, 0 };
+			warrior.push_back({ x, y, 0 });
 		}
 
 		for (int i = 0; i < N; i++) {
@@ -83,9 +82,10 @@ int main(int argc, char** argv)
 			}
 
 			// 전사가 있으면 공격
-			for (int w = 0; w < M; w++) {
-				pos &war = warrior[w];
-				if (war.x == x && war.y == y) war.status = -1; // .erase(warrior.begin() + i);
+			vector<pos>::iterator war = warrior.begin();
+			while(war != warrior.end()) {
+				if (war->x == x && war->y == y) warrior.erase(war);
+				else { ++war; }
 			}
 
 			// 2. 메두사의 시선
@@ -104,8 +104,7 @@ int main(int argc, char** argv)
 				// 1) area: 메두사 그림자 영역 1 체크
 				view(x, y, 1, dir[i]);
 				// 2) area: 전사 그림자 영역 3 체크
-				for (int w = 0; w < M; w++) {
-					pos &war = warrior[w];
+				for (pos &war : warrior) {
 					if (area[war.x][war.y] != 1) continue; // 1일 때만 신경 써야
 					if (war.status) continue;
 					if (i == 0 && war.x < x) {
@@ -131,8 +130,7 @@ int main(int argc, char** argv)
 				}
 				if (!real) {
 					cnt = 0;
-					for (int w = 0; w < M; w++) {
-						pos &war = warrior[w];
+					for (pos &war : warrior) {
 						if (!war.status && area[war.x][war.y] == 1) cnt++;
 					}
 					if (rockCnt < cnt) {
@@ -141,8 +139,7 @@ int main(int argc, char** argv)
 					}
 				}
 				else { // 실제 find_d로 전사 돌 만들기
-					for (int w = 0; w < M; w++) {
-						pos &war = warrior[w];
+					for (pos &war : warrior) {
 						if (!war.status && area[war.x][war.y] == 1) war.status = 1;
 					}
 					break;
@@ -152,8 +149,7 @@ int main(int argc, char** argv)
 			// 3. 전사들의 이동
 			moveCnt = 0; // 이동횟수
 			attackCnt = 0;
-			for (int w = 0; w < M; w++) {
-				pos &war = warrior[w];
+			for (pos &war : warrior) {
 				for (int k = 0; k < 2; k++) {
 					if (war.status || area[war.x][war.y] == 1) break; // war.status (1:돌, -1:죽음) 일 때
 					int i = get_dir(war.x, war.y, x, y, k * 2); // 전사들 모드 (0, 1 상관없이 모두 지나감)
@@ -169,8 +165,7 @@ int main(int argc, char** argv)
 			}
 
 			cout << moveCnt << " " << rockCnt << " " << attackCnt << "\n";
-			for (int w = 0; w < M; w++) {
-				pos &war = warrior[w];
+			for (pos &war : warrior) {
 				if (war.status == 1) war.status = 0;
 			}
 		}
