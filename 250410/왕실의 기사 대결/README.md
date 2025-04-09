@@ -1,8 +1,8 @@
 # [왕실의 기사 대결 ![Gold3][g3]](https://www.codetree.ai/training-field/search/problems/royal-knight-duel)
 
-|유형|출처|
-|---|---|
-|[Simulation](https://www.codetree.ai/training-field/search/?tags=Simulation), [BFS](https://www.codetree.ai/training-field/search/?tags=BFS)|[일반연습 / 문제은행](https://www.codetree.ai/training-field/home)|
+|유형|출처|소요시간 / 평균시간|
+|---|---|---|
+|[Simulation](https://www.codetree.ai/training-field/search/?tags=Simulation), [BFS](https://www.codetree.ai/training-field/search/?tags=BFS)|[일반연습 / 문제은행](https://www.codetree.ai/training-field/home)| 110분 / 180+분|
 
 
 
