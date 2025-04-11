@@ -79,21 +79,26 @@ int main(int argc, char** argv)
 				if (nx == men.x && ny == men.y) continue;
 				t.x = nx, t.y = ny;
 			}
+			//cout << k << "\n";
+			//for (int i = 0; i < M; i++) {
+			//	posd &t = theif[i];
+			//	if (t.d < 0) continue;
+			//	cout << t.x + 1 << "," << t.y + 1 << "," << t.d << "\n";
+			//}
 			// 술래잡기
 			men = path[k];
 			int mx = men.x, my = men.y;
 			for (int i = 0; i < 3; i++) {
-				mx += dx[men.d], my += dy[men.d];
 				for (int i = 0; i < M; i++) {
 					posd &t = theif[i];
 					if (t.d < 0) continue;
 					if ((t.x == mx) && (t.y == my)) {
-						if (board[t.x][t.y]) break;
+						if (board[t.x][t.y]) continue; // 나무에 있으면 넘기고 다음 도망자 확인
 						t.d = -1;
 						ans += k;
-						break;
 					}
 				}
+				mx += dx[men.d], my += dy[men.d];
 			}
 		}
 
