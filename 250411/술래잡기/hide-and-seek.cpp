@@ -1,5 +1,6 @@
 #include<iostream>
 #include<cstring>
+#include<vector>
 
 using namespace std;
 
@@ -20,118 +21,125 @@ struct pos {
 };
 
 int N, M, H, K;
-int board[MAX][MAX];
-posd theif[MAX * MAX]; // M까지
-posd path[101];
+int tree[MAX][MAX];
+int vis[MAX][MAX]; // 디버깅용
 
 //(상)(우)(하)(좌) 택
 int dx[4] = { -1, 0, 1, 0 };
 int dy[4] = { 0, 1, 0, -1 };
 
-void find_path();
+void move(vector<posd> &theif, const posd &men);
+int play(vector<posd> &theif, const posd &men);
+void display(const int arr[MAX][MAX]);
 
 int main(int argc, char** argv)
 {
 	int test_case;
 	int T;
-	
+
 	ios::sync_with_stdio(0);
 	cin.tie(0);
 
 	//cin >> T;
 	T = 1;
-	/*
-	   여러 개의 테스트 케이스가 주어지므로, 각각을 처리합니다.
-	*/
+	
 	for (test_case = 1; test_case <= T; ++test_case)
 	{
-		memset(board, 0, sizeof(board));
-		memset(theif, 0, sizeof(theif));
+		//memset(board, 0, sizeof(board));
+		memset(tree, 0, sizeof(tree));
+		vector<posd> theif; // M까지
 
 		cin >> N >> M >> H >> K;
 		for (int i = 0; i < M; i++) {
 			int x, y, d;
 			cin >> x >> y >> d;
-			theif[i] = { x - 1, y - 1, d };
+			theif.push_back({ x - 1, y - 1, d });
 		}
 		for (int i = 0; i < H; i++) {
 			int x, y;
 			cin >> x >> y;
-			board[x - 1][y - 1] = 1;
+			tree[x - 1][y - 1] = 1;
 		}
 
 		// 술래 경로 찾기
-		find_path();
+		posd cur = posd{ N / 2, N / 2, 0 };
+		int max_cnt = 1, cnt = 0, plus = 1;
+		bool flag = true;
 
 		int ans = 0;
 		for (int k = 1; k <= K; k++) {
-			posd &men = path[k - 1];
 			// 도망자 움직이기
-			for (int i = 0; i < M; i++) {
-				posd &t = theif[i];
-				if (t.d < 0) continue;
-				if (abs(t.x - men.x) + abs(t.y - men.y) > 3) continue;
-				int nx = t.x + dx[t.d], ny = t.y + dy[t.d];
-				if (nx < 0 || nx >= N || ny < 0 || ny >= N) {
-					t.d ^= 2;
-					nx = t.x + dx[t.d], ny = t.y + dy[t.d];
-				}
-				if (nx == men.x && ny == men.y) continue;
-				t.x = nx, t.y = ny;
-			}
-			//cout << k << "\n";
-			//for (int i = 0; i < M; i++) {
-			//	posd &t = theif[i];
-			//	if (t.d < 0) continue;
-			//	cout << t.x + 1 << "," << t.y + 1 << "," << t.d << "\n";
-			//}
-			// 술래잡기
-			men = path[k];
-			int mx = men.x, my = men.y;
-			for (int i = 0; i < 3; i++) {
-				for (int i = 0; i < M; i++) {
-					posd &t = theif[i];
-					if (t.d < 0) continue;
-					if ((t.x == mx) && (t.y == my)) {
-						if (board[t.x][t.y]) continue; // 나무에 있으면 넘기고 다음 도망자 확인
-						t.d = -1;
-						ans += k;
-					}
-				}
-				mx += dx[men.d], my += dy[men.d];
-			}
-		}
+			move(theif, cur);
 
+			// 술래 업데이트
+			//vis[cur.x][cur.y] = k;
+			cur.x += dx[cur.d], cur.y += dy[cur.d];
+			cnt++;
+
+			if (cur == posd{ 0, 0, 0 }) {
+				max_cnt = N, cnt = 1, flag = false, plus = -1;
+				cur.d = 2;
+			}
+			else if (cur == posd{ N / 2, N / 2, 0 }) {
+				max_cnt = 1, cnt = 0, flag = true, plus = 1;
+				cur.d = 0;
+			}
+			if (cnt == max_cnt) { // 방향 변경
+				cur.d = (cur.d + plus + 4) % 4;
+				if (!flag) max_cnt += plus;
+				flag = !flag;
+				cnt = 0;
+			}
+
+			// 술래 잡기
+			ans += k * play(theif, cur);
+
+		}
 		cout << ans << "\n";
-		
+
 	}
 	return 0;//정상종료시 반드시 0을 리턴해야합니다.
 }
 
-void find_path() {
-	posd start = { N / 2, N / 2, 0 };
-	posd end = { 0, 0, 0 }; // 0, 0으로 변경 필요
+int play(vector<posd> &theif, const posd &men) {
+	vector<posd> path = { {men.x, men.y}, {men.x + dx[men.d], men.y + dy[men.d]}, {men.x + 2 * dx[men.d], men.y + 2 * dy[men.d]} };
 
-	posd cur = start;
-	int base = 1;
-	int mode = 1;
-	
-	int k = 0;
-	path[k++] = start; 
-	while(k <= K) {
-		int b = 2;
-		while (b--) {
-			for (int i = 0; i < base; i++ && k < K) {
-				cur.x += dx[cur.d], cur.y += dy[cur.d];
-				if (cur == end) { cur.d = 2; mode = -1; i = -1; base--;  b = 2; } // 방향 전환
-				if (cur == start) { cur.d = 0; mode = 1; i = -1; b = 1; } // 반복문 초기화
-				path[k++] = cur;
+	int sum = 0;
+	for (auto &m : path) {
+		if (m.x < 0 || m.x >= N || m.y < 0 || m.y >= N) continue;
+		if (tree[m.x][m.y]) continue;
+		vector<posd>::iterator iter = theif.begin();
+		while (iter != theif.end()) {
+			if (m.x == iter->x && m.y == iter->y) {
+				iter = theif.erase(iter);
+				sum++;
 			}
-			cur.d = (cur.d + (1 * mode) + 4) % 4;
-			path[k - 1].d = cur.d; // 마지막은 보는 방향으로 바꾸기
+			else iter++;
 		}
-		base = base + (1 * mode);
 	}
 
-	return;
+	return sum;
+}
+
+void move(vector<posd> &theif, const posd &men) {
+	for (auto &t : theif) {
+		if (abs(t.x - men.x) + abs(t.y - men.y) > 3) continue;
+		int nx = t.x + dx[t.d], ny = t.y + dy[t.d];
+		if (nx < 0 || nx >= N || ny < 0 || ny >= N) {
+			t.d ^= 2;
+			nx = t.x + dx[t.d], ny = t.y + dy[t.d];
+		}
+		if (nx == men.x && ny == men.y) continue;
+		t.x = nx, t.y = ny; // 업데이트
+	}
+
+}
+
+void display(const int arr[MAX][MAX]) {
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			cout << arr[i][j];
+		}
+		cout << "\n";
+	}
 }
