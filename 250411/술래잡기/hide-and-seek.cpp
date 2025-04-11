@@ -94,6 +94,8 @@ int main(int argc, char** argv)
 			// 술래 잡기
 			ans += k * play(theif, cur);
 
+			// 도망자 없으면 종료
+			if (theif.empty()) break;
 		}
 		cout << ans << "\n";
 
@@ -132,7 +134,6 @@ void move(vector<posd> &theif, const posd &men) {
 		if (nx == men.x && ny == men.y) continue;
 		t.x = nx, t.y = ny; // 업데이트
 	}
-
 }
 
 void display(const int arr[MAX][MAX]) {
