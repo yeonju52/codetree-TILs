@@ -1,14 +1,8 @@
 # [예술성 ![Gold3][g3]](https://www.codetree.ai/training-field/search/problems/artistry)
 
-|유형|출처|
-|---|---|
-|[DFS](https://www.codetree.ai/training-field/search/?tags=DFS), [Simulation](https://www.codetree.ai/training-field/search/?tags=Simulation)|[일반연습 / 문제은행](https://www.codetree.ai/training-field/home)|
-
-
-
-
-
-
+|유형|출처|소요시간 / 평균시간|
+|---|---|---| 
+|[DFS](https://www.codetree.ai/training-field/search/?tags=DFS), [Simulation](https://www.codetree.ai/training-field/search/?tags=Simulation)|[일반연습 / 문제은행](https://www.codetree.ai/training-field/home)| 140분 / 180+분|
 
 
 [b5]: https://img.shields.io/badge/Bronze_5-%235D3E31.svg
