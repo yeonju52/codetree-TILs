@@ -5,9 +5,9 @@
 
 using namespace std;
 
-const int MAX = 29;
+const int MAX = 30;
 
-struct group{
+struct group {
 	int num, cnt;
 };
 
@@ -15,7 +15,7 @@ int N;
 int board[MAX][MAX];
 int vis[MAX][MAX];
 int backup[MAX][MAX];
-group conc[MAX * MAX + 1]; // i 번째 라벨의 값 (1번부터)
+group conc[MAX * MAX]; // i 번째 라벨의 값 (1번부터)
 
 int dfs(int x, int y, int label);
 void display(const int arr[MAX][MAX]);
@@ -78,16 +78,16 @@ int main(int argc, char** argv)
 				// 두 개의 조합을 가지고, get_score
 				ans += get_score(gidx[0], gidx[1]);
 			} while (next_permutation(brute.begin(), brute.end()));
-			
+
 			if (step == 0) break;
 			// 3: 회전
-			 // TODO: 상단에 올리기 백업
+			int halfNplus = N / 2 + 1;
 			memcpy(backup, board, sizeof(backup));
 			ccwrotate(); // 반시계 회전
 			rotate(0, 0); // 좌상
-			rotate(N / 2 + 1, 0); // 좌하
-			rotate(0, N / 2 + 1); // 우상
-			rotate(N / 2 + 1, N / 2 + 1); // 우하
+			rotate(halfNplus, 0); // 좌하
+			rotate(0, halfNplus); // 우상
+			rotate(halfNplus, halfNplus); // 우하
 			//display(board);
 		}
 		cout << ans << "\n";
